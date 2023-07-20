@@ -1,0 +1,40 @@
+import socket
+import threading
+import random
+
+QUOTES = [
+    "The only way to do great work is to love what you do. - Steve Jobs",
+    "Life is what happens when you're busy making other plans. - John Lennon",
+    "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
+    "Success is not final, failure is not fatal: It is the courage to continue that counts. - Winston Churchill",
+    "In the end, it's not the years in your life that count. It's the life in your years. - Abraham Lincoln",
+    "The only limit to our realization of tomorrow will be our doubts of today. - Franklin D. Roosevelt",
+    "The journey of a thousand miles begins with one step. - Lao Tzu",
+    "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
+    "The only thing we have to fear is fear itself. - Franklin D. Roosevelt",
+    "You miss 100% of the shots you don't take. - Wayne Gretzky"
+]
+
+def get_random_quote():
+    return random.choice(QUOTES)
+
+def handle_client(connection, address):
+    print(f"Connection established with {address}")
+
+    quote = get_random_quote().encode()
+    connection.send(quote)
+    connection.close()
+
+def main():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(('', 8888))
+    server_socket.listen(5)
+    print("Server is ready to provide quotes.")
+
+    while True:
+        connection, address = server_socket.accept()
+        client_handler = threading.Thread(target=handle_client, args=(connection, address))
+        client_handler.start()
+
+if __name__ == "__main__":
+    main()
