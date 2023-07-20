@@ -1,0 +1,34 @@
+import socket
+
+PORT = 8888
+
+def convert_to_atmosphere(pressure_bar):
+    conversion_factor = 0.986923
+
+    return pressure_bar * conversion_factor
+
+def main():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('', PORT))
+    server_socket.listen(1)
+
+    print(f"Server listening on port {PORT}...")
+
+    while True:
+        conn, addr = server_socket.accept()
+        print("Connected by:", addr)
+
+        data = conn.recv(1024)
+        pressure_bar = float(data.decode('utf-8'))
+
+        pressure_atm = convert_to_atmosphere(pressure_bar)
+
+        conn.sendall(str(pressure_atm).encode('utf-8'))
+
+        print(f"Pressure in atmosphere: {pressure_atm} atm")
+
+        conn.close()
+
+if __name__ == "__main__":
+    main()
