@@ -1,0 +1,17 @@
+import socket
+
+def main():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_address = ('192.168.222.129', 8888)
+
+    try:
+        client_socket.connect(server_address)
+        quote = client_socket.recv(1024)
+        print(f"Received quote of the day: {quote.decode()}")
+    except ConnectionRefusedError:
+        print("Error: The server is not running or unavailable.")
+    finally:
+        client_socket.close()
+
+if __name__ == "__main__":
+    main()
